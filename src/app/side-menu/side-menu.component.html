@@ -1,0 +1,60 @@
+<div class="col-md-3 left_col menu_fixed">
+  <div class="left_col scroll-view">
+    <div class="navbar nav_title">
+      <a href="/" class="site_title"><i class="fa fa-share"></i> <span>SmartAVC</span></a>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <!-- sidebar menu -->
+    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+      <div class="menu_section">
+
+        <ul class="nav side-menu">
+
+          <li routerLinkActive="active"><a routerLink="/farmers"><i class="fa fa-user"></i> Farmers</a>
+          </li>
+
+          <li routerLinkActive="active" *ngIf="admin"><a routerLink="/coll"><i class="fa fa-university"></i> Collection Centers</a>
+          </li>
+          <!-- 
+                    <li routerLinkActive="active"><a routerLink="/cooperatives"><i class="fa fa-users"></i> Cooperatives</a>
+                    </li>               
+              -->
+          <li routerLinkActive="active"><a routerLink="/transporters"><i class="fa fa-truck"></i> Transporters</a>
+          </li>
+
+          <li routerLinkActive="active"><a routerLink="/stock"><i class="fa fa-truck"></i> Stock</a>
+          </li>
+
+          <li routerLinkActive="active"><a routerLink="/settings"><i class="fa fa-cogs"></i> Settings</a>
+          </li>
+          <li>
+            <a (click)="logout()"> <i class="fa fa-sign-out"></i> Logout</a>
+          </li>
+        </ul>
+
+
+      </div>
+
+    </div>
+    <!-- /sidebar menu -->
+
+    <!-- /menu footer buttons -->
+    <div class="sidebar-footer hidden-small">
+      <a data-toggle="tooltip" data-placement="top" title="Settings">
+        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+      </a>
+      <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+      </a>
+      <a data-toggle="tooltip" data-placement="top" title="Lock">
+        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+      </a>
+      <a data-toggle="tooltip" data-placement="top" title="Logout">
+        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+      </a>
+    </div>
+    <!-- /menu footer buttons -->
+  </div>
+</div>
