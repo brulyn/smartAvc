@@ -1,4 +1,5 @@
 <div class="container body">
+  {{ user_collection_center}}
   <popup (confirmClick)="confirmDelete()">
     The farmer will be deleted. Are you sure?
   </popup>
@@ -47,7 +48,7 @@
                         name="national_id" placeholder="1 1989 8 00023 9023 90 01">
                       <div *ngIf="farmerForm.controls['national_id'].hasError('required') && farmerForm.controls['national_id'].touched" class="alert alert-danger">You must include a National ID.</div>
                       <div *ngIf="farmerForm.controls['national_id'].hasError('minlength') && farmerForm.controls['national_id'].touched" class="alert alert-danger">The length can't be less than 16.</div>
-                      
+
                     </div>
 
                     <div class="form-group">

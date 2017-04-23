@@ -86,7 +86,7 @@ export class CollComponent implements OnInit {
 
                 (user) => {
                     
-                    firebase.database().ref('/subscribers/').push({
+                    firebase.database().ref('/subscribers/' + user.uid).set({
                         name: name,
                         collection_center: coll_id,
                         username: username,

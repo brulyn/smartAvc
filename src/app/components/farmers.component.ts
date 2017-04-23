@@ -26,6 +26,8 @@ declare var firebase: any;
 })
 
 export class FarmersComponent implements OnInit {
+    user: any;
+    user_collection_center: any;
     selected_farmer: any;
     previous_stock: number;
     stock: number;
@@ -53,7 +55,7 @@ export class FarmersComponent implements OnInit {
 
     farmerForm: FormGroup;
 
-    constructor(private auth: AuthService, fb: FormBuilder, public popup:Popup) {
+    constructor(private auth: AuthService, fb: FormBuilder, public popup: Popup) {
         this.farmerForm = fb.group({
             'first_name': [null, Validators.required],
             'last_name': [null, Validators.required],
@@ -72,6 +74,7 @@ export class FarmersComponent implements OnInit {
     }
 
     ngOnInit() {
+        
         this.fbGetData();
         this.getCategories();
     }
@@ -252,7 +255,7 @@ export class FarmersComponent implements OnInit {
         this.popup.show(this.popup.options);
     }
 
-    confirmDelete(){
+    confirmDelete() {
         var id = this.selected_farmer;
         firebase.database().ref('/farmers/' + this.farmers_keys[id]).remove();
         this.popup.hide();
@@ -321,28 +324,51 @@ export class FarmersComponent implements OnInit {
         this.category_keys = category_keys
     }
 
+    getUserInfo() {
+        this.user = firebase.auth().currentUser;
+        var uid = this.user.uid;
+
+        firebase.database().ref('/subscribers/' + uid).on('value', (user) => {
+            this.user_collection_center = user.val().collection_center;
+        })
+    }
+
     updateDone(id) {
+
         this.updatingStock = false;
         var new_stock: number = this.stock;
-        var postData = {
-            stock: new_stock,
-            updating_stock: false,
-            date_deposit: Date.now(),
-            category: this.category_name,
-            subcategory: this.subcategory_name
-        }
-        firebase.database().ref('/farmers/' + this.farmers_keys[id]).update(postData);
+        var category_name = this.category_name;
+        var subcategory_name = this.subcategory_name;
 
+        this.user = firebase.auth().currentUser;
+        var uid = this.user.uid;
+        var postData: any;
+        firebase.database().ref('/subscribers/' + uid).on('value', (snapshot) => {
+            this.user_collection_center = snapshot.val().collection_center;
+            postData = {
+                stock: new_stock,
+                updating_stock: false,
+                date_deposit: Date.now(),
+                category: this.category_name,
+                collection_center: this.user_collection_center,
+                subcategory: this.subcategory_name
+            }
 
-        firebase.database().ref('/stock/').push({
+            firebase.database().ref('/farmers/' + this.farmers_keys[id]).update(postData);
+
+            firebase.database().ref('/stock/').push({
             farmer_id: this.farmers_keys[id],
             farmer_names: this.farmers_names[id],
+            collection_center: snapshot.val().collection_center,
             stock: this.stock,
             date: Date.now(),
             category: this.category_name,
             subcategory: this.subcategory_name,
             status: 'pending'
         })
+        })
+
+        
 
         this.fbGetData();
         this.stock = 0;
