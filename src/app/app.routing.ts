@@ -5,7 +5,8 @@ import { CollComponent } from './components/coll.component';
 import { CoopComponent } from './components/cooperatives.component';
 import { SettingsComponent } from './components/settings.component';
 import { LoginComponent } from './components/login.component';
-import { StockComponent } from './components/stock.component'
+import { StockComponent } from './components/stock.component';
+import { ProfileComponent } from './profile/profile.component'
 import { AuthGuard } from './shared/services/auth.guard'
 export const routes: Routes = [
 
@@ -16,6 +17,10 @@ export const routes: Routes = [
     },
     {
         path: 'login',
+        component: LoginComponent
+    },
+    {
+        path: 'login/:message',
         component: LoginComponent
     },
     {
@@ -59,6 +64,11 @@ export const routes: Routes = [
     {
         path: 'settings',
         component: SettingsComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'profile',
+        component: ProfileComponent,
         canActivate: [AuthGuard]
     }
 

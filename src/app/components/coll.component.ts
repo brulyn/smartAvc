@@ -1,4 +1,5 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
+import { md5 } from '../shared/ts/md5';
 import { Coll } from '../shared/models/coll';
 import { Popup } from 'ng2-opd-popup';
 import { AuthService } from '../shared/services/auth.service'
@@ -72,29 +73,48 @@ export class CollComponent implements OnInit {
                     manager_names: this.coll.manager_names,
                     manager_username: this.coll.manager_username,
                     manager_contact: this.coll.manager_contact,
+                    supervisor_names: this.coll.supervisor_names,
+                    supervisor_username: this.coll.supervisor_username,
+                    supervisor_contact: this.coll.supervisor_contact,
                     province: this.province_name,
                     district: this.district_name,
                     sector: this.sector_name,
+                    generated_id: md5(this.coll.name),
                     date_created: Date.now(),
                     stock: 0
                 });
             var username = this.coll.manager_username;
-            var coll_id = this.coll.name;
+            var coll_name = this.coll.name;
             var name = this.coll.manager_names;
+            var supervisor_name = this.coll.supervisor_names;
+            var supervisor_username = this.coll.supervisor_username;
             firebase.auth().createUserWithEmailAndPassword(this.coll.manager_username + '@smartavc.com', 'password')
                 .then(
 
                 (user) => {
-                    
+
                     firebase.database().ref('/subscribers/' + user.uid).set({
                         name: name,
-                        collection_center: coll_id,
+                        collection_center: coll_name,
+                        coll_gen_id: md5(coll_name),
                         username: username,
                         role: 'coll_admin'
                     })
-                }
-                )
+                })
 
+            firebase.auth().createUserWithEmailAndPassword(this.coll.supervisor_username + '@smartavc.com', 'password')
+                .then(
+
+                (user) => {
+
+                    firebase.database().ref('/subscribers/' + user.uid).set({
+                        name: supervisor_name,
+                        collection_center: coll_name,
+                        coll_gen_id: md5(coll_name),
+                        username: supervisor_username,
+                        role: 'supervisor'
+                    })
+                })
         }
 
         if (this.update_collection) {
@@ -104,6 +124,9 @@ export class CollComponent implements OnInit {
                 manager_names: this.coll.manager_names,
                 manager_username: this.coll.manager_username,
                 manager_contact: this.coll.manager_contact,
+                supervisor_names: this.coll.supervisor_names,
+                supervisor_username: this.coll.supervisor_username,
+                supervisor_contact: this.coll.supervisor_contact,
                 province: this.province_name,
                 district: this.district_name,
                 sector: this.sector_name,
@@ -226,9 +249,23 @@ export class CollComponent implements OnInit {
         this.popup.show(this.popup.options);
     }
 
-    confirmDelete(){
+    confirmDelete() {
         var id = this.selected_coll;
-        firebase.database().ref('/colls/' + this.colls_keys[id]).remove();
+        var coll_id = this.colls_keys[id];
+        firebase.database().ref('/colls/' + coll_id).once('value').then(
+            (snapshot) => {
+                var gen_id = snapshot.val().generated_id;
+                console.log(gen_id)
+                firebase.database().ref('/subscribers/')
+                    .orderByChild('coll_gen_id')
+                    .equalTo(gen_id).on('child_added', (snapshot) => {
+                        firebase.database().ref('/subscribers/' + snapshot.key).remove();
+                    })
+            }
+        )
+
+        firebase.database().ref('/colls/' + coll_id).remove();
+
         this.popup.hide();
         this.fbGetData();
     }

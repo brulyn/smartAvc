@@ -75,6 +75,12 @@
                       <input type="text" class="form-control" id="manager_contact" [(ngModel)]="coll.manager_contact" name="manager_contact" placeholder="07X XXXX XXX">
                     </div>
 
+                    <div class="form-group">
+                      <label for="supervisor_names">Supervisor</label>
+                      <input type="text" class="form-control" id="supervisor_names" [(ngModel)]="coll.supervisor_names" name="supervisor_names"
+                        placeholder="Supervisor Names">
+                    </div>
+
                     <div class="row">
                       <div class="form-group col-md-6">
                         <button type="submit" class="btn btn-primary btn-sm"> Done</button>
@@ -84,12 +90,25 @@
                   </div>
 
                   <div class="col-md-6">
+
+                    <div class="form-group">
+                      <label for="supervisor_username">Supervisor's Username</label>
+                      <input type="text" class="form-control" id="supervisor_username" [(ngModel)]="coll.supervisor_username" name="supervisor_username"
+                        placeholder="Supervisor Username">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="supervisor_contact">Supervisor's Contact</label>
+                      <input type="text" class="form-control" id="supervisor_contact" [(ngModel)]="coll.supervisor_contact" name="supervisor_contact"
+                        placeholder="07X XXXX XXX">
+                    </div>
+
                     <div class="form-group">
                       <label for="province">Province</label>
                       <select class="form-control" name="province_name" id="province" (change)="province_change()" [(ngModel)]="province_name">
-                    <option value="">Select your province</option>
-                    <option *ngFor="let province of provinces" value="{{province}}" >{{ province}}</option>
-                  </select>
+                        <option value="">Select your province</option>
+                        <option *ngFor="let province of provinces" value="{{province}}" >{{ province}}</option>
+                      </select>
                     </div>
 
                     <div class="form-group">

@@ -74,7 +74,7 @@ export class FarmersComponent implements OnInit {
     }
 
     ngOnInit() {
-        
+
         this.fbGetData();
         this.getCategories();
     }
@@ -167,41 +167,96 @@ export class FarmersComponent implements OnInit {
 
 
     fbGetData() {
-        this.farmers = [];
-        this.farmers_keys = [];
-        firebase.database().ref('/farmers/').on('child_added', (snapshot, prevChildKey) => {
-            this.farmers.push(snapshot.val());
-            this.farmers_keys.push(snapshot.key);
-            this.farmers_names.push(snapshot.val().first_name + ' ' + snapshot.val().last_name);
+
+        var farmers = [];
+        var farmers_keys = [];
+        var farmers_names = this.farmers_names;
+        this.user = firebase.auth().currentUser;
+        var uid = this.user.uid;
+
+        firebase.database().ref('/subscribers/' + uid).on('value', (user) => {
+            this.user_collection_center = user.val().collection_center;
+
+            //check profile of the logged in user
+            if (user.val().role == 'admin') {
+                firebase.database().ref('/farmers/')
+                    .on('child_added', (snapshot, prevChildKey) => {
+                        farmers.push(snapshot.val());
+                        farmers_keys.push(snapshot.key);
+                        farmers_names.push(snapshot.val().first_name + ' ' + snapshot.val().last_name);
+                    })
+            } else {
+                firebase.database().ref('/farmers/')
+                    .orderByChild('collection_center')
+                    .equalTo(user.val().collection_center)
+                    .on('child_added', (snapshot, prevChildKey) => {
+                        farmers.push(snapshot.val());
+                        farmers_keys.push(snapshot.key);
+                        farmers_names.push(snapshot.val().first_name + ' ' + snapshot.val().last_name);
+                    })
+            }
+
+
+
+            this.farmers = farmers;
+            this.farmers_keys = farmers_keys;
+            this.farmers_names = farmers_names;
         })
+
         this.farmer = new Farmer();
     }
 
     fbPostData() {
-        if (this.create_farmer) {
-            this.create_farmer = false;
-            firebase.database().ref('/farmers/').push(
-                {
-                    first_name: this.farmer.first_name,
-                    last_name: this.farmer.last_name,
-                    national_id: this.farmer.national_id,
-                    province: this.province_name,
-                    district: this.district_name,
-                    sector: this.sector_name,
-                    phone_number_mtn: this.farmer.phone_number_mtn,
-                    phone_number_airtel: this.farmer.phone_number_airtel,
-                    phone_number_tigo: this.farmer.phone_number_tigo,
-                    gender: this.farmer.gender,
-                    age: this.farmer.age,
-                    married: this.farmer.married,
-                    farm_width: this.farmer.farm_width,
-                    date_deposit: Date.now(),
-                    stock: 0,
-                    farmer_id: this.farmers.length + 1,
-                    category: ''
-                });
-        }
 
+        if (this.create_farmer) {
+
+            this.create_farmer = false;
+
+            var first_name = this.farmer.first_name
+            var last_name = this.farmer.last_name
+            var national_id = this.farmer.national_id
+            var province = this.province_name
+            var district = this.district_name
+            var sector = this.sector_name
+            var phone_number_mtn = this.farmer.phone_number_mtn
+            var phone_number_airtel = this.farmer.phone_number_airtel
+            var phone_number_tigo = this.farmer.phone_number_tigo
+            var gender = this.farmer.gender
+            var age = this.farmer.age
+            var married = this.farmer.married
+            var farm_width = this.farmer.farm_width
+            var farmer_id = this.farmers.length + 1
+
+            this.user = firebase.auth().currentUser;
+            var uid = this.user.uid;
+
+            firebase.database().ref('/subscribers/' + uid).on('value', (user) => {
+                this.user_collection_center = user.val().collection_center;
+
+                firebase.database().ref('/farmers/').push(
+                    {
+                        first_name: first_name,
+                        last_name: last_name,
+                        collection_center: user.val().collection_center,
+                        collection_center_id: user.val().coll_gen_id,
+                        national_id: national_id,
+                        province: province,
+                        district: district,
+                        sector: sector,
+                        phone_number_mtn: phone_number_mtn,
+                        phone_number_airtel: phone_number_airtel,
+                        phone_number_tigo: phone_number_tigo,
+                        gender: gender,
+                        age: age,
+                        married: married,
+                        farm_width: farm_width,
+                        date_deposit: Date.now(),
+                        stock: 0,
+                        farmer_id: farmer_id,
+                        category: ''
+                    });
+            })
+        }
         if (this.update_farmer) {
             this.update_farmer = false;
             firebase.database().ref('/farmers/' + this.farmers_keys[this.farmer_id]).set(
@@ -357,18 +412,20 @@ export class FarmersComponent implements OnInit {
             firebase.database().ref('/farmers/' + this.farmers_keys[id]).update(postData);
 
             firebase.database().ref('/stock/').push({
-            farmer_id: this.farmers_keys[id],
-            farmer_names: this.farmers_names[id],
-            collection_center: snapshot.val().collection_center,
-            stock: this.stock,
-            date: Date.now(),
-            category: this.category_name,
-            subcategory: this.subcategory_name,
-            status: 'pending'
-        })
+                farmer_id: this.farmers_keys[id],
+                farmer_names: this.farmers_names[id],
+                collection_center: snapshot.val().collection_center,
+                stock: this.stock,
+                date: Date.now(),
+                category: this.category_name,
+                subcategory: this.subcategory_name,
+                status: 'pending',
+                pending: true,
+                approved: false,
+            })
         })
 
-        
+
 
         this.fbGetData();
         this.stock = 0;

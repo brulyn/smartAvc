@@ -53,6 +53,7 @@
                                     <thead>
                                         <tr>
                                             <th>Date and Time</th>
+                                            <th>Collection Center</th>
                                             <th>Farmer</th>
                                             <th>Type brought</th>
                                             <th>Category</th>
@@ -63,11 +64,13 @@
                                     <tbody>
                                         <tr *ngFor=" let stock of stocks; let i= index; trackBy: trackByIndex">
                                             <td>{{ stock.date | date:'medium' }}</td>
+                                            <td>{{ stock.collection_center }}</td>
                                             <td>{{ stock.farmer_names }}</td>
                                             <td>{{ stock.category }}</td>
                                             <td>{{ stock.subcategory }}</td>
                                             <td>{{ stock.stock }}</td>
-                                            <td>{{ stock.status }}</td>
+                                            <td *ngIf="!supervisor">{{ stock.status }}</td>
+                                            <td *ngIf="supervisor"> <button class="btn btn-xs" [ngClass]="{'btn-primary':!stock.pending, 'btn-warning':stock.pending}" (click)="approve(i)">{{stock.status}}</button> </td>
                                         </tr>
                                     </tbody>
                                     

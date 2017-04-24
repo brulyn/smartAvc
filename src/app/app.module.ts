@@ -24,6 +24,7 @@ import 'rxjs/add/operator/catch';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { TopMenuComponent } from './top-menu/top-menu.component';
 import { FooterComponent } from './footer/footer.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
     imports: [
@@ -44,7 +45,8 @@ import { FooterComponent } from './footer/footer.component';
         StockComponent,
         SideMenuComponent,
         TopMenuComponent,
-        FooterComponent
+        FooterComponent,
+        ProfileComponent
     ],
     providers: [
         FarmerService,

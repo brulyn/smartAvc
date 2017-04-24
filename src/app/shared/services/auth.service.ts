@@ -21,6 +21,7 @@ export class AuthService {
 
     signupUser(user: User) {
         var email = user.email + "@smartavc.com"
+        var errorMessage = this.errorMessage
         firebase.auth().createUserWithEmailAndPassword(email, user.password)
             .then(
             (currentUser) => {
@@ -36,12 +37,14 @@ export class AuthService {
                 this.router.navigate(['/farmers'])
             })
             .catch(function (error) {
+                errorMessage = error.message
                 console.log(error);
             });
     }
 
     signinUser(user) {
         let router = this.router;
+        var errorMessage = this.errorMessage
         firebase.auth().signInWithEmailAndPassword(user.email+"@smartavc.com", user.password)
             .then(
             () => {
@@ -50,6 +53,7 @@ export class AuthService {
             )
             .catch(function (error) {
                 console.log(error.code);
+                errorMessage = error.code;
                 router.navigate(['/login', error.code]);
             });
 

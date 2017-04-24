@@ -21,7 +21,8 @@ declare var firebase: any;
 
 
 export class SettingsComponent implements OnInit {
-
+    user: any;
+    admin = false;
     categories = [];
     category_keys = [];
     category_name = "Kinigi";
@@ -30,13 +31,26 @@ export class SettingsComponent implements OnInit {
     cost = 0;
 
     add_trigger = false;
-    constructor(private auth:AuthService, public popup: Popup) {
+    constructor(private auth: AuthService, public popup: Popup) {
         this.getCategories();
     }
 
     ngOnInit() {
         this.getCategories();
+        this.getUserInfo();
     }
+
+    getUserInfo() {
+        this.user = firebase.auth().currentUser;
+        var uid = this.user.uid;
+
+        firebase.database().ref('/subscribers/' + uid).on('value', (user) => {
+            if(user.val().role == 'admin'){
+                this.admin = true;
+            }
+        })
+    }
+
     changeCost() {
         var c = this.cost;
         var n = this.category_name;
@@ -65,7 +79,7 @@ export class SettingsComponent implements OnInit {
         this.category_keys = category_keys
     }
 
-    deleteCategory(id){
+    deleteCategory(id) {
 
         firebase.database().ref('/categories/' + this.category_keys[id]).remove();
 
@@ -76,11 +90,11 @@ export class SettingsComponent implements OnInit {
         return index;
     }
 
-    add(){
+    add() {
         this.add_trigger = true;
     }
 
-    addCategory(){
+    addCategory() {
         firebase.database().ref('/categories/').push({
             'name': this.new_category_name,
             'cost': 0
@@ -89,7 +103,7 @@ export class SettingsComponent implements OnInit {
         this.getCategories();
     }
 
-     showPopup(i) {
+    showPopup(i) {
         this.selected_cat = i;
         this.popup.options = {
             header: "Deleting a Type",
@@ -107,14 +121,14 @@ export class SettingsComponent implements OnInit {
         this.popup.show(this.popup.options);
     }
 
-    confirmDelete(){
+    confirmDelete() {
         var id = this.selected_cat;
         firebase.database().ref('/categories/' + this.category_keys[id]).remove();
         this.popup.hide();
         this.getCategories();
     }
 
-    logout(){
+    logout() {
         this.auth.logout();
     }
 

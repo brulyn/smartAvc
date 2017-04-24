@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service'
 
 @Component({
@@ -8,13 +8,21 @@ import { AuthService } from '../shared/services/auth.service'
     providers: [AuthService]
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
     error: any;
+    errorMessage: any;
+    sub: any;
 
-    constructor(private auth:AuthService) {
+    constructor(private auth: AuthService, private route: ActivatedRoute) {
 
     }
 
+    ngOnInit() {
+
+        this.sub = this.route.params.subscribe(params => {
+            this.errorMessage = params['message'];
+        });
+    }
     login(f) {
         this.auth.signinUser(f.value);
     }
