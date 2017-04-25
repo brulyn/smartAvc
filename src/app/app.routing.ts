@@ -6,7 +6,8 @@ import { CoopComponent } from './components/cooperatives.component';
 import { SettingsComponent } from './components/settings.component';
 import { LoginComponent } from './components/login.component';
 import { StockComponent } from './components/stock.component';
-import { ProfileComponent } from './profile/profile.component'
+import { ProfileComponent } from './profile/profile.component';
+import { TransportersComponent } from './transporters/transporters.component'
 import { AuthGuard } from './shared/services/auth.guard'
 export const routes: Routes = [
 
@@ -54,6 +55,11 @@ export const routes: Routes = [
     {
         path: 'stock',
         component: StockComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'transporters',
+        component: TransportersComponent,
         canActivate: [AuthGuard]
     },
     {

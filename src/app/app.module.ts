@@ -25,6 +25,7 @@ import { SideMenuComponent } from './side-menu/side-menu.component';
 import { TopMenuComponent } from './top-menu/top-menu.component';
 import { FooterComponent } from './footer/footer.component';
 import { ProfileComponent } from './profile/profile.component';
+import { TransportersComponent } from './transporters/transporters.component';
 
 @NgModule({
     imports: [
@@ -46,7 +47,8 @@ import { ProfileComponent } from './profile/profile.component';
         SideMenuComponent,
         TopMenuComponent,
         FooterComponent,
-        ProfileComponent
+        ProfileComponent,
+        TransportersComponent
     ],
     providers: [
         FarmerService,

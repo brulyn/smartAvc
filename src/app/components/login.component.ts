@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
     error: any;
     errorMessage: any;
     sub: any;
+    wait = false;
 
     constructor(private auth: AuthService, private route: ActivatedRoute) {
 
@@ -19,11 +20,15 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
 
+
         this.sub = this.route.params.subscribe(params => {
             this.errorMessage = params['message'];
         });
+
     }
     login(f) {
+        
         this.auth.signinUser(f.value);
+        
     }
 }

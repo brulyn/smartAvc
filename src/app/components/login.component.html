@@ -7,7 +7,7 @@
         <h3 align="center">Smart AVC | Login</h3>
         <form #f='ngForm' (ngSubmit)="login(f)">
             
-            <div class="form-group" class="has-error" *ngIf="errorMessage">
+            <div class="form-group has-error" *ngIf="errorMessage">
                 <span>{{ errorMessage }}</span>
             </div>
             <div class="form-group">
@@ -19,6 +19,7 @@
             </div>
 
             <button type="submit" id="signInBtn" class="btn btn-block btn-info">Login</button>
+            
         </form>
 
 
