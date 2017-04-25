@@ -62,7 +62,6 @@ export class TransportersComponent implements OnInit {
       'phone_Number_mtn': "",
       'phone_Number_airtel': "",
       'phone_Number_tigo': "",
-      'farm_width': [null, Validators.required],
       'district': "",
       'province_name': "",
       'sector': "",
@@ -247,10 +246,7 @@ export class TransportersComponent implements OnInit {
             gender: gender,
             age: age,
             married: married,
-            date_deposit: Date.now(),
-            stock: 0,
-            transporter_id: transporter_id,
-            category: ''
+            transporter_id: transporter_id
           });
       })
     }
@@ -404,18 +400,6 @@ export class TransportersComponent implements OnInit {
 
       firebase.database().ref('/transporters/' + this.transporters_keys[id]).update(postData);
 
-      firebase.database().ref('/stock/').push({
-        transporter_id: this.transporters_keys[id],
-        transporter_names: this.transporters_names[id],
-        collection_center: snapshot.val().collection_center,
-        stock: this.stock,
-        date: Date.now(),
-        category: this.category_name,
-        subcategory: this.subcategory_name,
-        status: 'pending',
-        pending: true,
-        approved: false,
-      })
     })
 
 
